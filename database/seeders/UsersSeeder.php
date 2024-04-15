@@ -2,26 +2,30 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
 use App\Models\User;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 
 class UsersSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => bcrypt('password'),
-        ]);
-        $admin->assignRole('admin');
+        $faker = Faker::create();
+        $companies = Company::all();
 
-        $user = User::create([
-            'name' => 'Moderator',
-            'email' => 'moderator@moderator.com',
-            'password' => bcrypt('password'),
-        ]);
-        $user->assignRole('moderator');
+        foreach ($companies as $company) {
+            for ($i = 0; $i < 2; $i++) {
+                $user = User::create([
+                    'name' => $faker->name,
+                    'email' => $faker->unique()->safeEmail,
+                    'password' => bcrypt('password'),  // Default password for all users
+                ]);
+
+                // Attach the user to the current company
+                $user->companies()->attach($company->id);
+            }
+        }
     }
 
 }

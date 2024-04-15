@@ -53,15 +53,17 @@ class CompaniesManager extends Component
 
     public function edit($id)
     {
-        $this->isModalOpen = true;
-
-        $this->resetInput();
         $company = Company::findOrFail($id);
-        $this->company_id = $id;
-        $this->name = $company->name;
-        $this->description = $company->description;
+        if (Auth::user()->can('edit company') && $this->userCanModifyCompany($company)) {
+            $this->company_id = $id;
+            $this->title = $company->title;
+            $this->info = $company->info;
+            $this->address = $company->address;
+            $this->isModalOpen = true;
+        } else {
+            session()->flash('error', 'You do not have permission to edit this company.');
+        }
     }
-
     public function resetInput()
     {
         $this->name = '';
@@ -80,13 +82,7 @@ class CompaniesManager extends Component
 
         if ($this->company_id) {
             $company = Company::find($this->company_id);
-            $company->update([
-                'title' => $this->title,
-                'info' => $this->info,
-                'address' => $this->address,
-            ]);
-            $company->save();
-            $this->updateMode = false;
+            $company->update($validatedData);
             session()->flash('message', 'Company Updated Successfully.');
             $this->resetInputFields();
         }
@@ -94,13 +90,19 @@ class CompaniesManager extends Component
 
     public function delete($id)
     {
-        try {
-            Company::findOrFail($id)->delete();
-            $this->loadCompanies();
+        $company = Company::findOrFail($id);
+        if (Auth::user()->can('delete company') && $this->userCanModifyCompany($company)) {
+            $company->delete();
             session()->flash('message', 'Company Deleted Successfully.');
-        } catch (\Exception $e) {
-            session()->flash('error', 'Failed to delete company.');
+            $this->loadCompanies();
+        } else {
+            session()->flash('error', 'You do not have permission to delete this company.');
         }
+    }
+
+    private function userCanModifyCompany($company)
+    {
+        return Auth::user()->hasRole('admin') || $company->user_id == Auth::id();
     }
 
     public function render()

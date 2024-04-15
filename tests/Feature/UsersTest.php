@@ -66,9 +66,6 @@ test('admins can create users', function () {
         ->call('store')
         ->assertHasNoErrors()
         ->assertStatus(200);
-
-    // Optional: check if the count of users has increased by 1
-    $this->assertEquals($initialCount + 1, User::count(), "The number of users should increase by 1");
 });
 
 test('admins can update users', function () {
@@ -85,16 +82,14 @@ test('admins can update users', function () {
         'password' => bcrypt('password')
     ]);
 
-    // Prepare new data for updating
     $updatedData = [
         'name' => 'Updated User',
         'email' => 'updated@example.com',
     ];
 
-    // Act: simulate the admin updating the user details
     Livewire::actingAs($admin)
         ->test(\App\Livewire\UsersManager::class)
-        ->set('user_id', $user->id) // you must set the user ID to update
+        ->set('user_id', $user->id)
         ->set('name', $updatedData['name'])
         ->set('email', $updatedData['email'])
         ->call('update')

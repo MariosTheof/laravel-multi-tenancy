@@ -17,19 +17,27 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = [
-            'view projects','view own projects', 'edit projects', 'delete projects',
-            'view companies', 'view own companies', 'create companies', 'edit companies', 'delete companies'
+            'view projects', 'view own projects', 'edit projects', 'delete projects',
+            'view companies', 'view own companies', 'create companies', 'delete company',
+            'edit own companies', 'delete own companies',
+            'edit own projects', 'delete own projects'
         ];
+
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);
         }
 
+        // Create roles and assign existing permissions
         $admin = Role::create(['name' => 'admin']);
-        // Admin gets all permissions
+        // Admin gets all permissions, including new specific ones
         $admin->givePermissionTo(Permission::all());
 
         $moderator = Role::create(['name' => 'moderator']);
-        // Moderators can view projects and companies
-        $moderator->givePermissionTo(['view own projects', 'view own companies']);
+        // Moderators can view all projects and companies, and modify only their own companies
+        $moderator->givePermissionTo([
+            'view projects', 'view own projects', 'view companies',
+            'view own companies', 'edit own companies', 'delete own companies',
+            'edit own projects', 'delete own projects'
+        ]);
     }
 }

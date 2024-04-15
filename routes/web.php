@@ -17,7 +17,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 
-
-
 // Include authentication routes
 require __DIR__ . '/auth.php';
