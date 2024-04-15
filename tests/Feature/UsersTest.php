@@ -85,6 +85,7 @@ test('admins can update users', function () {
     $updatedData = [
         'name' => 'Updated User',
         'email' => 'updated@example.com',
+        'password' => bcrypt('secret'),
     ];
 
     Livewire::actingAs($admin)
@@ -92,6 +93,7 @@ test('admins can update users', function () {
         ->set('user_id', $user->id)
         ->set('name', $updatedData['name'])
         ->set('email', $updatedData['email'])
+        ->set('password', $updatedData['password'])
         ->call('update')
         ->assertHasNoErrors()
         ->assertStatus(200);

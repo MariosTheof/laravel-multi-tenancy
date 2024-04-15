@@ -17,7 +17,7 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = [
-            'view projects', 'view own projects', 'edit projects', 'delete projects',
+            'view projects', 'view own projects', 'edit projects', 'delete projects', 'create projects',
             'view companies', 'view own companies', 'create companies', 'delete company',
             'edit own companies', 'delete own companies',
             'edit own projects', 'delete own projects'
