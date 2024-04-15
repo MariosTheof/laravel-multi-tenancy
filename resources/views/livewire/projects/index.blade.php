@@ -19,7 +19,7 @@
                 <td>{{ $project->company->name }}</td>
                 <td>
                 <td>
-                    <x-secondary-button wire:click="edit({{ $project->id }})">Edit</x-secondary-button>
+{{--                    <x-secondary-button wire:click="edit({{ $project->id }})">Edit</x-secondary-button>--}}
                     <x-secondary-button wire:click="delete({{ $project->id }})">Delete</x-secondary-button>
                 </td>
             </tr>
